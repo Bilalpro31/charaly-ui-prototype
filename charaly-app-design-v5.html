@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Charaly Charaly: full app design</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap">
+<style>
+:root{--bg:#f3f3f6;--fg:#14141a;--mut:#6a6a78;--ln:#d9d9e1;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0a0a0c;--fg:#eceef3;--mut:#8a8a9a;--ln:#26262c}}
+:root[data-theme="dark"]{--bg:#0a0a0c;--fg:#eceef3;--mut:#8a8a9a;--ln:#26262c}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.45 Figtree,system-ui,sans-serif;-webkit-tap-highlight-color:transparent}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none;padding:0;text-align:left}
+.lab{padding:20px 16px 8px;max-width:760px;margin:0 auto}
+.lab b{font-weight:700;letter-spacing:.14em;font-size:12px}
+.lab h1{margin:2px 0 4px;font-size:26px;font-weight:600;letter-spacing:-.02em}
+.lab p{margin:0;color:var(--mut)}
+.row{display:flex;gap:6px;overflow-x:auto;padding:8px 16px;max-width:760px;margin:0 auto;scrollbar-width:none}
+.row::-webkit-scrollbar{display:none}
+.t{flex:none;padding:8px 14px;border-radius:99px;border:1px solid var(--ln);color:var(--mut);font-size:13px}
+.t.on{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+#desc{max-width:760px;margin:6px auto 14px;padding:0 16px;color:var(--mut)}
+.ph{--b:#0f0f11;--s1:#1c1c1f;--s2:#2b2b2f;--t:#f4f4f6;--m:#9b9ba4;--bl:#3b63ff;--am:#f2b66d;--l:rgba(255,255,255,.1);position:relative;width:min(390px,100%);height:min(844px,calc(100dvh - 210px));min-height:640px;margin:0 auto 24px;overflow:hidden;background:var(--b);color:var(--t);isolation:isolate;border-radius:22px}
+@media(min-width:600px){.ph{border:9px solid #000;border-radius:46px;box-shadow:0 30px 70px rgba(0,0,0,.35)}}
+.sb{position:absolute;top:0;left:0;right:0;z-index:20;display:flex;justify-content:space-between;padding:11px 24px 0;font-size:11px;font-weight:600;color:rgba(255,255,255,.9);pointer-events:none}
+.scr{position:absolute;inset:0;display:flex;flex-direction:column}
+.bd{flex:1;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none;padding:44px 16px 96px}
+.bd::-webkit-scrollbar,.ms::-webkit-scrollbar,.hs::-webkit-scrollbar,.sg::-webkit-scrollbar,.shd::-webkit-scrollbar{display:none}
+.mu{color:var(--m)}
+h1,h2,h3,h4{margin:0;font-weight:700;letter-spacing:-.025em}
+svg.sc{position:absolute;inset:0;width:100%;height:100%}
+.pt{display:block;width:100%;height:100%;background:radial-gradient(circle at 50% 32%,hsl(var(--h) 65% 80%) 0 13%,transparent 14%),radial-gradient(ellipse at 50% 78%,hsl(var(--h) 55% 60%) 0 33%,transparent 34%),linear-gradient(170deg,hsl(var(--h) 50% 32%),hsl(calc(var(--h) + 45) 45% 12%))}
+.av{flex:none;overflow:hidden;width:var(--s,34px);height:var(--s,34px);border-radius:var(--r,50%);display:block;position:relative}
+/* home */
+.hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.logo{font-size:30px;font-weight:700;letter-spacing:-.05em}
+.ic2{display:flex;gap:14px;align-items:center}
+.dotb{position:relative}.dotb::after{content:"";position:absolute;top:-1px;right:-1px;width:9px;height:9px;border-radius:50%;background:var(--bl);border:2px solid var(--b)}
+.srch{display:flex;align-items:center;gap:10px;padding:13px 18px;border-radius:99px;background:var(--s2);color:var(--m);font-size:17px;margin-bottom:14px}
+.pls{display:flex;gap:10px;overflow-x:auto;margin:0 -16px 18px;padding:0 16px;scrollbar-width:none}
+.pl{flex:none;padding:10px 18px;border-radius:99px;border:1px solid #3b3b40;font-size:16px;font-weight:500}
+.pl.on{background:#f4f4f6;color:#111;border-color:#f4f4f6}
+.cont{position:relative;display:block;width:100%;aspect-ratio:16/10;border-radius:26px;overflow:hidden;margin-bottom:20px}
+.cont::after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 35%,rgba(0,0,0,.82))}
+.cont .tx{position:absolute;left:16px;right:70px;bottom:14px;z-index:2}
+.cont h2{font-size:23px;margin:6px 0 2px}.cont p{margin:0;font-size:13px;color:rgba(255,255,255,.8)}
+.cont .pb{position:absolute;right:14px;bottom:14px;z-index:2;width:46px;height:46px;border-radius:50%;background:#f4f4f6;color:#111;display:grid;place-items:center}
+.live{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:99px;background:rgba(14,14,18,.6);backdrop-filter:blur(10px);font-size:12px;font-weight:600;color:var(--am)}
+.live i{width:7px;height:7px;border-radius:50%;background:var(--am);animation:pu 1.8s infinite}
+@keyframes pu{50%{opacity:.35}}
+@media(prefers-reduced-motion:reduce){.live i,.dots i{animation:none}}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:20px 12px}
+.cd .im{position:relative;aspect-ratio:1;border-radius:24px;overflow:hidden}
+.cd .im .live,.cd .im .nw{position:absolute;top:10px;left:10px;z-index:2}
+.nw{padding:5px 11px;border-radius:99px;background:var(--bl);font-size:12px;font-weight:700;color:#fff}
+.cd h3{font-size:20px;margin:10px 0 3px}
+.cd p{margin:0;color:var(--m);font-size:14px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.tg{display:flex;gap:6px;margin:8px 0;flex-wrap:wrap}
+.tg span{padding:4px 10px;border-radius:8px;background:var(--s1);font-size:13px;color:#cfcfd6}
+.stt{font-size:13px;color:var(--m);display:flex;gap:10px;align-items:center}
+/* library */
+.lh{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.lh h1{font-size:30px}
+.up{padding:10px 18px;border-radius:99px;background:#f4f4f6;color:#111;font-weight:600;font-size:15px}
+.sh2{display:flex;align-items:center;gap:10px;margin:22px 0 14px}
+.sh2 h2{font-size:23px}.sh2 .mo{margin-left:auto;color:var(--m);font-size:16px;display:flex;align-items:center;gap:2px}
+.ps{display:grid;grid-template-columns:1fr 1fr;gap:14px 12px}
+.po{position:relative;aspect-ratio:3/4.1;border-radius:24px;overflow:hidden;display:block;width:100%}
+.po::after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 55%,rgba(0,0,0,.75))}
+.po .ct{position:absolute;left:14px;bottom:12px;z-index:2;display:flex;gap:6px;align-items:center;font-weight:600;font-size:15px}
+.pn{font-size:19px;margin:10px 0 8px;font-weight:500}
+.bd2{display:inline-block;padding:7px 14px;border-radius:12px;background:var(--bl);font-weight:700;font-size:15px;margin-right:8px}
+.gy{display:inline-block;padding:7px 14px;border-radius:12px;background:var(--s2);color:var(--m);font-size:15px}
+.cst{display:flex;gap:14px;overflow-x:auto;margin:0 -16px;padding:0 16px;scrollbar-width:none}
+.cs{flex:none;width:92px;text-align:center;font-size:13px}
+.cs .av{--s:84px;margin:0 auto 6px;box-shadow:0 0 0 2px var(--b),0 0 0 4px var(--am)}
+.cs span{display:block;color:var(--m);font-size:12px}
+/* nav */
+.nv{position:absolute;left:0;right:0;bottom:0;z-index:12;display:flex;justify-content:space-between;align-items:center;padding:12px 22px 16px;background:linear-gradient(transparent,#0f0f11 38%)}
+.nv button{width:44px;height:44px;display:grid;place-items:center;color:#cfcfd6;position:relative}
+.nv button.on{color:#fff}
+.nv .dt::after{content:"";position:absolute;top:8px;right:8px;width:8px;height:8px;border-radius:50%;background:var(--bl)}
+/* chat */
+.cbg{position:absolute;inset:0;z-index:-1}
+.cbg::after{content:"";position:absolute;inset:0;background:linear-gradient(rgba(0,0,0,.35),transparent 24%,transparent 38%,rgba(8,8,10,.82) 100%)}
+.ch{display:flex;align-items:center;gap:6px;padding:34px 10px 0;z-index:5;position:relative}
+.ch .tt{font-weight:700;font-size:19px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0;text-shadow:0 1px 8px rgba(0,0,0,.5)}
+.gp{display:flex;align-items:center;gap:5px;padding:7px 11px;border-radius:99px;background:rgba(40,40,46,.62);backdrop-filter:blur(12px);border:1px solid var(--l);font-weight:600;font-size:14px;position:relative;flex:none}
+.gp.am{color:var(--am)}
+.gi{width:36px;height:36px;display:grid;place-items:center;flex:none;position:relative;color:#fff;filter:drop-shadow(0 1px 6px rgba(0,0,0,.5))}
+.bgn{position:absolute;top:-9px;right:-4px;padding:2px 7px;border-radius:99px;background:var(--bl);font-size:11px;font-weight:700;color:#fff}
+.dt2::after{content:"";position:absolute;top:3px;right:3px;width:9px;height:9px;border-radius:50%;background:var(--bl);border:2px solid #222}
+.dsc{text-align:center;font-size:11.5px;line-height:1.35;color:rgba(255,255,255,.62);padding:12px 54px 0;text-shadow:0 1px 6px rgba(0,0,0,.6)}
+.rail{position:absolute;right:10px;top:120px;z-index:6;display:flex;flex-direction:column;gap:10px;align-items:center}
+.rb{width:44px;height:44px;border-radius:50%;background:rgba(24,24,28,.62);backdrop-filter:blur(12px);border:1px solid var(--l);display:grid;place-items:center;position:relative}
+.stk{display:flex;flex-direction:column;align-items:center;padding:4px;border-radius:99px;background:rgba(24,24,28,.62);backdrop-filter:blur(12px);border:1px solid var(--l)}
+.stk .av{--s:34px;margin-top:-8px;box-shadow:0 0 0 2px #1d1d21}.stk .av:first-child{margin-top:0}
+.tens{position:absolute;left:14px;top:132px;z-index:6;display:flex;flex-direction:column;align-items:center;gap:8px;font-size:10px;color:rgba(255,255,255,.65)}
+.tens .tr{width:5px;height:120px;border-radius:5px;background:rgba(255,255,255,.2);position:relative;overflow:hidden}
+.tens i{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(var(--am),#ff7a59);border-radius:5px;transition:height .6s}
+.ms{flex:1;overflow-y:auto;display:flex;flex-direction:column;padding:0 14px 6px;scrollbar-width:none}
+.ms.hud{padding-left:34px;padding-right:62px}
+.mi{margin-top:auto}
+.gb{background:rgba(16,16,20,.74);backdrop-filter:blur(12px);border-radius:22px;padding:14px 16px;line-height:1.55;font-size:16px}
+.gb.n{font-style:italic;color:#d4d4dc;margin:10px 0}
+.gb.pv{margin:12px 0}.gb.pv b{display:block;font-style:normal;font-size:17px;color:#fff;margin-bottom:3px}
+.cm{display:flex;gap:8px;margin:10px 0;align-items:flex-start}
+.cm .gb{border-top-left-radius:6px;flex:1;min-width:0}
+.cm .nm{font-size:13px;font-weight:700;color:var(--am);margin-bottom:2px;font-style:normal}
+.um{margin:10px 0 10px auto;width:fit-content;max-width:88%;padding:11px 16px;border-radius:22px 22px 6px 22px;background:rgba(255,255,255,.18);backdrop-filter:blur(12px);font-size:16px;line-height:1.5}
+.um small{color:var(--am);font-weight:700;margin-right:6px}
+.rp{display:flex;margin:-2px 0 6px 42px}
+.rp span{display:inline-flex;gap:6px;align-items:center;padding:5px 12px;border-radius:99px;background:rgba(242,182,109,.14);border:1px solid rgba(242,182,109,.3);color:var(--am);font-size:12.5px;font-weight:600;backdrop-filter:blur(8px);animation:rin .5s}
+@keyframes rin{from{opacity:0;transform:translateY(6px)}}
+.dots i{display:inline-block;width:6px;height:6px;margin-right:4px;border-radius:50%;background:var(--m);animation:pu 1s infinite}
+.mv{padding:2px 16px 4px;font-size:12.5px;color:var(--am);display:flex;gap:6px;align-items:center;height:22px}
+.sg{display:flex;gap:8px;overflow-x:auto;padding:4px 14px;scrollbar-width:none}
+.sg button{flex:none;padding:9px 15px;border-radius:99px;background:rgba(40,40,46,.7);backdrop-filter:blur(10px);border:1px solid var(--l);font-size:14px}
+.bar{display:flex;align-items:center;gap:8px;padding:6px 12px 14px}
+.bar>button{width:44px;height:44px;display:grid;place-items:center;position:relative;flex:none;color:#e8e8ee}
+.ip{flex:1;display:flex;align-items:center;gap:8px;min-width:0;padding:4px 6px 4px 16px;border-radius:99px;background:rgba(60,60,66,.62);backdrop-filter:blur(14px);border:1px solid var(--l)}
+.ip input{flex:1;min-width:0;background:none;border:0;outline:0;color:#fff;font:16px Figtree,sans-serif;padding:9px 0}
+.ip input::placeholder{color:rgba(255,255,255,.55)}
+.md{font-size:13px;font-weight:700;color:var(--am);flex:none}
+.sd{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;flex:none;color:#e8e8ee}
+.sd.go{background:#f4f4f6;color:#111}
+.kb{height:250px;background:#1a1a21;display:grid;place-items:center;color:var(--m);font-size:12px;background-image:repeating-linear-gradient(#1a1a21 0 38px,#25252e 38px 40px)}
+/* sheets */
+.scm{position:absolute;inset:0;z-index:30;background:rgba(0,0,0,.55)}
+.shd{position:absolute;left:0;right:0;bottom:0;z-index:31;max-height:80%;overflow-y:auto;background:#1a1a1d;border-radius:28px 28px 0 0;padding:10px 20px 26px;scrollbar-width:none;animation:up .25s}
+@keyframes up{from{transform:translateY(30px);opacity:.4}}
+.gr{width:40px;height:4px;border-radius:4px;background:var(--s2);margin:0 auto 16px}
+.shd h3{font-size:22px;margin-bottom:2px}
+.shd h4{font-size:13px;color:var(--m);font-weight:600;margin:20px 0 8px}
+.clk{display:flex;align-items:center;gap:16px;margin:8px 0 4px}
+.clk b{font-size:52px;font-weight:600;letter-spacing:-.04em;line-height:1;color:var(--am)}
+.arc{height:6px;border-radius:6px;background:linear-gradient(90deg,#f2d28b,#e8845a 40%,#3b3a7a 70%,#15152c);position:relative;margin:14px 0 4px}
+.arc i{position:absolute;top:-4px;width:14px;height:14px;border-radius:50%;background:#fff;border:3px solid var(--am);transform:translateX(-50%)}
+.al{display:flex;justify-content:space-between;font-size:11px;color:var(--m)}
+.pp{display:flex;gap:12px;align-items:center;padding:8px 0;width:100%}
+.pp b{display:block;font-weight:600}.pp span{font-size:13px;color:var(--m)}
+.it{display:flex;gap:10px;padding:8px 0;line-height:1.4;align-items:flex-start}
+.it::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--am);margin-top:7px;flex:none}
+.it.nw2::before{background:var(--bl)}
+.it small{color:var(--m);display:block;font-size:12px}
+.pm{padding:12px 14px;border-radius:16px;background:var(--s1);margin:6px 0;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.pm span{font-size:13px;color:var(--am);font-weight:600;white-space:nowrap}
+.tl{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.tl button{padding:16px 14px;border-radius:18px;background:var(--s1);display:flex;flex-direction:column;gap:8px;font-weight:600}
+.tl button small{color:var(--m);font-weight:400;font-size:12px}
+.tl button.on{background:#f4f4f6;color:#111}.tl button.on small{color:#555}
+.sgm{display:flex;gap:6px;margin:6px 0}
+.sgm button{flex:1;text-align:center;padding:10px;border-radius:12px;background:var(--s1);font-weight:600;font-size:14px;color:var(--m)}
+.sgm button.on{background:#f4f4f6;color:#111}
+.bt{display:inline-block;padding:12px 20px;border-radius:99px;background:var(--s2);font-weight:600;margin:6px 8px 0 0}
+.bt.p{background:#f4f4f6;color:#111}
+.bar2{height:6px;border-radius:6px;background:var(--s2);margin:6px 0 2px}.bar2 i{display:block;height:100%;border-radius:6px;background:var(--am)}
+.pill{display:inline-block;padding:5px 12px;border-radius:99px;background:var(--s2);font-size:13px}
+.mr{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--l)}.mr .g{flex:1;min-width:0}.mr b{font-size:17px;display:block}
+.ok{color:#7fd6a4}.wn{color:#e8b86a}
+.set{padding:16px 0;border-bottom:1px solid var(--l);display:flex;justify-content:space-between;gap:12px;font-size:16px}.set span{color:var(--m)}
+.big{display:block;width:100%;padding:18px;border-radius:22px;background:var(--s1);margin-bottom:12px}.big b{font-size:18px;display:block}.big span{color:var(--m)}
+
+.cta2{position:absolute;left:0;right:0;bottom:0;z-index:14;padding:26px 16px 18px;background:linear-gradient(transparent,#0f0f11 45%)}
+.pr{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:17px;border-radius:99px;background:#f4f4f6;color:#111;font-weight:700;font-size:17px;text-align:center}
+.pr[disabled]{background:var(--s2);color:var(--m)}
+.bk{position:absolute;top:34px;left:12px;z-index:15;width:40px;height:40px;border-radius:50%;background:rgba(24,24,28,.6);backdrop-filter:blur(12px);display:grid;place-items:center;color:#fff}
+.hr2{position:relative;height:430px;margin:0 -16px}
+.hr2::after{content:"";position:absolute;inset:0;background:linear-gradient(rgba(0,0,0,.3),transparent 30%,#0f0f11 97%)}
+.hr2 .tx{position:absolute;left:16px;right:16px;bottom:6px;z-index:2}
+.hr2 h1{font-size:36px;line-height:1.05;margin:8px 0 4px}
+.hk{padding:12px 16px;border-radius:18px;background:var(--s1);font-style:italic;color:#d4d4dc;margin:8px 0;line-height:1.5}
+.ob{position:absolute;inset:0}
+.ob .tx{position:absolute;left:22px;right:22px;bottom:120px;z-index:3}
+.ob h1{font-size:34px;line-height:1.1}
+.dg{display:flex;gap:6px;margin:6px 0 16px}.dg i{height:4px;flex:1;border-radius:4px;background:rgba(255,255,255,.22)}.dg i.on{background:#fff}
+.rd{display:flex;gap:12px;padding:14px;border-radius:18px;background:var(--s1);border:1.5px solid transparent;width:100%;margin:8px 0;align-items:center}
+.rd.on{border-color:var(--am)}.rd b{display:block}.rd span{font-size:13px;color:var(--m)}
+.ck{display:inline-flex;align-items:center;gap:8px;padding:7px 14px 7px 7px;border-radius:99px;background:var(--s1);border:1.5px solid transparent;margin:0 8px 8px 0;font-weight:500}
+.ck.on{border-color:var(--am)}.ck.t2{padding:9px 16px}
+.fld{width:100%;background:var(--s1);border:1px solid var(--l);border-radius:16px;padding:14px 16px;color:#fff;font:16px Figtree,sans-serif;outline:0;margin:6px 0 14px;resize:none;display:block}
+.fld:focus-visible{border-color:var(--am)}
+.lb{font-size:13px;color:var(--m);font-weight:600}
+.sw{width:50px;height:30px;border-radius:30px;background:var(--s2);position:relative;flex:none}.sw::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:.2s}.sw.on{background:var(--am)}.sw.on::after{left:23px}
+.drop{border:1.5px dashed #4a4a50;border-radius:22px;padding:24px;text-align:center;color:var(--m);margin:6px 0 14px}
+.cdp{padding:16px;border-radius:22px;background:var(--s1);margin-bottom:12px}.cdp p{margin:4px 0 10px;line-height:1.5}
+.sr{display:flex;gap:12px;align-items:center;padding:12px 0;width:100%;border-bottom:1px solid var(--l)}.sr .g{flex:1;min-width:0}.sr b{font-size:17px;display:block}.sr i{display:block;color:#bdbdc6;font-size:14px;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.act{padding:16px;border-radius:22px;background:var(--s1);margin-bottom:12px}
+.fl{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-top:1px solid var(--l)}
+</style></head>
+<body>
+<header class="lab"><b>CHARALY</b><h1>Charaly: full app design</h1><p>The v4 look, applied to every screen of the app.</p></header>
+<div class="row" id="ts"></div>
+<div class="row" id="tx"></div>
+<p id="desc"></p>
+<div class="ph" id="ph"></div>
+<script>
+const $=s=>document.querySelector(s);
+const I={home:'<path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/>',chat:'<path d="M12 4C7 4 3.5 7.2 3.5 11.3c0 2 .9 3.800 2.400 5.100L5 20l3.700-1.600c1 .3 2.100.5 3.300.5 5 0 8.500-3.200 8.500-7.300S17 4 12 4z"/>',plus:'<circle cx="12" cy="12" r="9.500"/><path d="M12 7.500v9M7.500 12h9"/>',lib:'<rect x="5" y="3" width="14" height="18" rx="2.500"/><path d="M9 17.500h6"/>',me:'<circle cx="12" cy="8" r="4"/><path d="M4 21c1-5.500 15-5.500 16 0"/>',back:'<path d="M15 5l-7 7 7 7"/>',menu:'<path d="M4 7h10M4 12h7M4 17h10M18 5l.8 2.200L21 8l-2.200.8L18 11l-.8-2.200L15 8l2.200-.8z"/>',brain:'<path d="M9 4a3 3 0 00-3 3 3 3 0 00-2 5 3 3 0 002 5 3 3 0 003 3zM15 4a3 3 0 013 3 3 3 0 012 5 3 3 0 01-2 5 3 3 0 01-3 3zM12 4v16"/>',alert:'<rect x="4" y="4" width="16" height="16" rx="3.500"/><path d="M12 8v5M12 16h.01"/>',slid:'<path d="M4 8h13M13 4l4 4-4 4M20 16H7M11 12l-4 4 4 4"/>',grid:'<rect x="4" y="4" width="6.500" height="6.500" rx="2"/><rect x="13.500" y="4" width="6.500" height="6.500" rx="2"/><rect x="4" y="13.500" width="6.500" height="6.500" rx="2"/><rect x="13.500" y="13.500" width="6.500" height="6.500" rx="2"/>',spk:'<path d="M12 3l1.800 5.200L19 10l-5.200 1.800L12 17l-1.800-5.200L5 10l5.200-1.800zM19 16l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7z"/>',up:'<path d="M12 19V5M5 12l7-7 7 7"/>',stop:'<rect x="7" y="7" width="10" height="10" rx="2.500" fill="currentColor"/>',pin:'<path d="M12 21s6-5.300 6-10a6 6 0 10-12 0c0 4.700 6 10 6 10z"/><circle cx="12" cy="11" r="2"/>',hour:'<path d="M7 3h10M7 21h10M8 3c0 5 8 5 8 9s-8 4-8 9M16 3c0 5-8 5-8 9"/>',eye:'<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',x:'<path d="M6 6l12 12M18 6L6 18"/>',play:'<path d="M8 5v14l11-7z" fill="currentColor"/>',bell:'<path d="M6 17v-6a6 6 0 1112 0v6l2 2H4zM10 21h4"/>',srch:'<circle cx="11" cy="11" r="6.500"/><path d="M16 16l4.500 4.500"/>',chev:'<path d="M6 9l6 6 6-6"/>',cr:'<path d="M9 6l6 6-6 6"/>',doit:'<path d="M5 12l5 5L20 7"/>',say:'<path d="M4 5h16v11H9l-5 4z"/>',think:'<circle cx="12" cy="10" r="6"/><circle cx="8" cy="19" r="1.500"/><circle cx="5" cy="22" r="1"/>',rw:'<path d="M3 12a9 9 0 109-9M3 4v5h5M12 8v5l3 2"/>',users:'<circle cx="9" cy="9" r="3.500"/><circle cx="17" cy="10" r="2.500"/><path d="M3 20c.5-4 11-4 12 0M15 15c3-.5 6 1 6 4"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'};
+const ic=(k,s=24,f)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="${f?'currentColor':'none'}" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${I[k]}</svg>`;
+let sid=0;
+function scene(i,hue){const g='g'+(sid++);const P=[
+['#1d1640','#5b2a66','#d9806a',`<circle cx="72" cy="26" r="9" fill="#ffe0bd" opacity=".25"/><circle cx="72" cy="26" r="5.500" fill="#ffe0bd"/><path d="M50 40l2.500 0 6 58H44z" fill="#0b0912"/><path d="M0 130V98h8v-6h6v8h8V88l4-4 4 4v14h10v-8h8v10h10V90l5-5 5 5v10h10v-7h8v6h14v31z" fill="#0b0912"/>`],
+['#06182f','#13507c','#3a8fa8',`<g fill="#fff"><circle cx="15" cy="14" r=".7"/><circle cx="40" cy="26" r=".6"/><circle cx="62" cy="10" r=".8"/><circle cx="84" cy="22" r=".6"/><circle cx="26" cy="40" r=".5"/><circle cx="90" cy="46" r=".7"/></g><path d="M18 130v-26a20 20 0 0140 0v26z" fill="#091522"/><path d="M36 84l4 0 0 20-4 0z" fill="#3a8fa8" opacity=".6"/><path d="M0 122q45-22 100-4v12H0z" fill="#050d17"/>`],
+['#12082e','#3b0f5c','#c9287a',`<g fill="#0a0516"><rect x="0" y="70" width="16" height="60"/><rect x="18" y="52" width="14" height="78"/><rect x="34" y="82" width="18" height="48"/><rect x="54" y="44" width="16" height="86"/><rect x="72" y="76" width="12" height="54"/><rect x="86" y="60" width="14" height="70"/></g><g fill="#18a4d0" opacity=".85"><rect x="21" y="58" width="2" height="2"/><rect x="26" y="70" width="2" height="2"/><rect x="58" y="52" width="2" height="2"/><rect x="62" y="66" width="2" height="2"/><rect x="89" y="68" width="2" height="2"/></g><rect x="56" y="30" width="12" height="4" rx="1" fill="#ff4fa0"/>`],
+['#161412','#3a3027','#8a6c46',`<g fill="#0d0b09"><path d="M6 130V76a14 14 0 0128 0v54z"/><path d="M38 130V70a14 14 0 0128 0v60z"/><path d="M70 130V76a14 14 0 0128 0v54z"/></g><circle cx="52" cy="62" r="14" fill="#e3b985" opacity=".12"/><g fill="#e3b985" opacity=".5"><circle cx="20" cy="40" r=".6"/><circle cx="70" cy="30" r=".5"/><circle cx="84" cy="50" r=".6"/></g>`]][i%4];
+return`<svg class="sc" viewBox="0 0 100 130" preserveAspectRatio="xMidYMid slice" ${hue?`style="filter:hue-rotate(${hue}deg)"`:''}><defs><linearGradient id="${g}" x1="0" y1="0" x2=".2" y2="1"><stop offset="0" stop-color="${P[0]}"/><stop offset=".55" stop-color="${P[1]}"/><stop offset="1" stop-color="${P[2]}"/></linearGradient></defs><rect width="100" height="130" fill="url(#${g})"/>${P[3]}</svg>`}
+const P=[
+{t:'Shadows of Paris',d:'Paris sleeps. Something on the rooftops does not.',tg:['Mystery','Superhero'],ep:'Ep 04',by:'@charaly',sc:0,hue:0,live:1,pg:'New chapter!'},
+{t:'The Last Observatory',d:'The telescope on the hill has started listening back.',tg:['Sci-fi','Quiet'],ep:'Ep 02',by:'@atacama',sc:1,hue:0,live:1},
+{t:'Neon District',d:'Every debt in the district is paid in memories.',tg:['Noir','Cyberpunk'],ep:'12 episodes',by:'@neonpaper',sc:2,hue:0,nw:1},
+{t:'The Silent Archive',d:'Nothing in here is allowed to be spoken aloud.',tg:['Eerie'],ep:'Ep 01',by:'@vault3',sc:3,hue:0},
+{t:'Winter Harbour',d:'A fishing town forgets one person every night.',tg:['Mystery','Slow burn'],ep:'9 episodes',by:'@saltlight',sc:1,hue:70,nw:1},
+{t:'Kingdom of Ash',d:'The king is dead. You were the last one in the room.',tg:['Fantasy','Politics'],ep:'14 episodes',by:'@emberpress',sc:3,hue:-40}];
+const PE=[{n:'Marinette',h:300,m:'Anxious',w:'Wants you to trust her',tr:62,k:'You saw the rooftop. She hasn’t told Alya.'},{n:'Alya',h:35,m:'Excited',w:'Wants answers tonight',tr:48,k:'Knows only that you were late.'},{n:'The shadow',h:250,m:'Unknown',w:'Watching from the roofs',tr:10,k:'Knows your name.'}];
+const AW=[['21:10','Alya texted Marinette about the rooftop.'],['20:30','Adrien left school early and has not come back.'],['19:55','The streetlights on Rue Mouffetard went out.']];
+const MEM=[{t:'Marinette saw you hesitate at the bridge.',w:'Marinette',nw:1},{t:'Alya thinks you are hiding something.',w:'Alya',nw:1},{t:'You kept Marinette’s secret twice.',w:'Marinette'},{t:'The shadow followed you from Rue Mouffetard.',w:'The shadow'}];
+const THR=['Who was on the rooftop?','Where did Adrien go?'];
+const PRM=[['Reply to Alya','by midnight'],['Meet Marinette at the bridge','tomorrow, 07:30']];
+const MD=[{n:'Qwen3 1.7B',d:'Fast. Good for quick scenes.',z:'1.28 GB',ok:1},{n:'Qwen3 4B',d:'Remembers more of the story.',z:'2.6 GB',ok:1},{n:'Llama 3.2 3B',d:'Warm, steady dialogue.',z:'2.0 GB',ok:1},{n:'Mistral Nemo 12B',d:'Best writing. Flagship phones only.',z:'7.1 GB',ok:2},{n:'Gemma 4 E2B',d:'Newest Gemma.',z:'1.9 GB',ok:0}];
+const DL=MD.map(()=>({st:'idle',pct:0,t:0}));DL[2].st='ready';
+const MODES={do:['Do','What do you do?'],say:['Say','What do you say?'],think:['Think','What goes through your mind?']};
+const SG=['Ask Marinette what she saw','Follow the shadow','Say nothing'];
+const REP=[[{r:'n',t:'Marinette grips the railing. In the water the bridge has two reflections, and only one of them is moving.'},{r:'c',p:0,t:'“Then it’s real. Stay close, and don’t look at the lights.”'},{r:'x',t:'Marinette trusts you more'},{r:'x',t:'Marinette will remember this',k:1}],[{r:'n',t:'A roof tile slides and shatters in the street behind you.'},{r:'c',p:1,t:'“That was not the wind.”'},{r:'x',t:'New thread · The roof'},{r:'x',t:'22:40 → 22:52',k:2}]];
+let CHAT=[{r:'pv'},{r:'n',t:'The rain has thinned to a hush. Under the Pont des Arts the lamplight shakes in the puddles.'},{r:'c',p:0,t:'“You saw it too, didn’t you?” She does not take her eyes off the rooftop.'},{r:'u',m:'do',t:'step closer to the railing'},{r:'n',t:'Across the river a shape pulls away from the chimney line and is gone.'},{r:'c',p:1,t:'“Okay. I did not sign up for ghost roofs.”'},{r:'x',t:'Alya is suspicious of you'}];
+const S={ob:0,pk:0,op:'1',role:'Newcomer',cast:['Marinette','Alya'],st:'1',tn:['Tender'],feat:0,dev:0,meas:0,repo:-1,md:0,scr:'home',kb:0,hud:1,gen:0,stopped:0,mode:'do',sh:'',pp:0,min:1360,ten:46,mem:2,ri:0,draft:'',sug:0,pace:'Normal',len:'Medium',tone:'Tender',added:0,last:''};
+const fm=m=>{m=((m%1440)+1440)%1440;return String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0')};
+const pt=(h,s,r)=>`<span class="av" style="--s:${s}px;${r?`--r:${r}`:''}"><span class="pt" style="--h:${h}"></span></span>`;
+function dlb(i){const m=MD[i],d=DL[i];if(!m.ok)return'<span class="pill wn">Update engine</span>';if(d.st==='idle')return`<button class="bt p" style="margin:0" data-dl="${i}">Get</button>`;if(d.st==='dl')return`<span class="pill" data-pg="${i}">${d.pct}%</span>`;if(d.st==='ver')return'<span class="pill">Verifying</span>';if(d.st==='ins')return'<span class="pill">Installing</span>';return`<span class="pill ok">${ic('doit',14)} Ready</span>`}
+const MAIN=['home','library','stories','create','me','hub'];
+const nv=()=>{if(!MAIN.includes(S.scr))return'';const n=[['home','home'],['stories','chat'],['create','plus'],['library','lib'],['me','me']];return`<nav class="nv">${n.map(([g,i])=>`<button class="${S.scr===g||(g==='me'&&S.scr==='hub')?'on':''} ${g==='stories'?'dt':''}" data-go="${g}" aria-label="${g}">${ic(i,28,S.scr===g&&(g==='home'||g==='me'))}</button>`).join('')}</nav>`};
+function home(){const c=P[0];return`<div class="bd"><div class="hd"><span class="logo">charaly</span><div class="ic2"><span class="dotb">${ic('bell',26)}</span></div></div><div class="srch">${ic('srch',22)} Autumn mysteries</div><div class="pls"><span class="pl on">For you</span><span class="pl">Continue</span><span class="pl">New</span><span class="pl">Trending</span><span class="pl">Your packs</span></div>
+<button class="cont" data-go="chat">${scene(0)}<div class="tx"><span class="live"><i></i>Paris is awake · ${fm(S.min)}</span><h2>${c.t}</h2><p>Episode 04 · Marinette is waiting under the bridge</p></div><span class="pb">${ic('play',22)}</span></button>
+<div class="cards">${P.slice(1).map((p,i)=>`<button class="cd" data-go="pack" data-pk="${i+1}"><div class="im">${scene(p.sc,p.hue)}${p.live?'<span class="live"><i></i>Live</span>':p.nw?'<span class="nw">New</span>':''}</div><h3>${p.t}</h3><p>${p.d}</p><div class="tg">${p.tg.map(t=>`<span>${t}</span>`).join('')}</div><div class="stt"><span>${ic('chat',15)} ${p.ep}</span><span>${p.by}</span></div></button>`).join('')}</div></div>`}
+function library(){return`<div class="bd"><div class="lh"><h1>Library</h1><span class="up">Import pack</span></div>
+<div class="sh2">${ic('play',22)}<h2>Continue playing</h2><span class="mo">More ${ic('cr',18)}</span></div><div class="ps">${[0,1].map(i=>`<div><button class="po" data-go="chat">${scene(P[i].sc)}<span class="ct">${ic('play',16)} Ep ${i?'02':'04'}</span></button><div class="pn">${P[i].t}</div><span class="bd2" style="${i?'background:var(--s2);color:var(--m)':''}">${i?'Waiting':'New chapter!'}</span><span class="gy">${P[i].tg[0]}</span></div>`).join('')}</div>
+<div class="sh2">${ic('rw',22)}<h2>Previously on…</h2><span class="mo">More ${ic('cr',18)}</span></div><div class="ps">${[['Ep 03 · The secret you kept',0,'12 scenes'],['Ep 02 · First night',3,'9 scenes']].map(x=>`<div><button class="po" data-go="chat">${scene(x[1],x[1]?30:0)}<span class="ct">${ic('rw',16)} ${x[2]}</span></button><div class="pn">${x[0]}</div><span class="gy">Recap · 2 min</span></div>`).join('')}</div>
+<div class="sh2">${ic('lib',22)}<h2>Story packs</h2></div><div class="ps">${[2,4,5,3].map(i=>`<div><button class="po" data-go="pack" data-pk="${i}">${scene(P[i].sc,P[i].hue)}<span class="ct">${ic('chat',15)} ${P[i].ep}</span></button><div class="pn">${P[i].t}</div><span class="gy">${P[i].tg[0]}</span></div>`).join('')}</div><div class="sh2">${ic('users',22)}<h2>People you’ve met</h2></div><div class="cst">${PE.slice(0,2).concat([{n:'Adrien',h:200,m:'Distracted'},{n:'Nino',h:120,m:'Cheerful'}]).map((p,i)=>`<button class="cs" data-pp="${Math.min(i,2)}">${pt(p.h,84)}${p.n}<span>${p.m}</span></button>`).join('')}</div></div>`}
+function stories(){return`<div class="bd"><div class="lh"><h1>Stories</h1></div>${P.slice(0,4).map((p,i)=>`<button class="pp" data-go="chat" style="padding:10px 0"><span class="av" style="--s:64px;--r:18px">${scene(p.sc)}</span><div style="flex:1"><b style="font-size:17px">${p.t}</b><span>${i<2?'Paris is awake · '+fm(S.min):'Paused'} · ${p.ep}</span></div>${i===0?'<span class="nw">New</span>':''}</button>`).join('')}</div>`}
+function create(){return`<div class="bd"><div class="lh"><h1>Create</h1></div><button class="big"><b>Import a story pack</b><span>Open a .charaly pack from your phone</span></button><button class="big"><b>Write your own world</b><span>Places, people, a first scene. Charaly does the rest.</span></button><button class="big"><b>Import character cards</b><span>Cards become people who live in a world</span></button></div>`}
+function models(){const m=MD[0];return`<div class="bd"><div class="lh"><button data-go="me" aria-label="Back">${ic('back',26)}</button><h1>Models</h1></div><p class="mu" style="margin:0 0 14px;font-size:15px">Stories run on your phone. After download, no internet needed.</p><div class="big"><span style="font-size:13px">Recommended for you</span><b style="font-size:22px;margin:2px 0">${m.n}</b><span>${m.d}</span><div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px"><span class="ok" style="font-size:13px">Runs well on this phone · ${m.z}</span>${dlb(0)}</div></div>${MD.slice(1).map((x,j)=>`<div class="mr"><div class="g"><b>${x.n}</b><span class="mu">${x.d}</span><div class="mu" style="font-size:13px">${x.z} · <span class="${x.ok===1?'ok':'wn'}">${x.ok===1?'Runs well':x.ok===2?'Heavy, may be slow':'Engine update required'}</span></div></div>${dlb(j+1)}</div>`).join('')}</div>`}
+function me(){return`<div class="bd"><div class="lh"><h1>Me</h1></div><button class="set" style="width:100%" data-go="models"><b>Story model</b><span>${MD[2].n} ›</span></button><div class="set"><b>Storage</b><span>4.8 GB used</span></div><div class="set"><b>Language</b><span>Türkçe</span></div><div class="set"><b>Appearance</b><span>Dark</span></div><div class="set"><b>About</b><span>Charaly 0.8.0</span></div></div>`}
+function msgs(){return CHAT.map(m=>{
+if(m.r==='pv')return`<div class="gb pv"><b>Previously</b>Episode 04 · A shape on the rooftops, a secret you kept, and a promise to Alya you have not answered yet.</div>`;
+if(m.r==='n')return`<div class="gb n">${m.t}</div>`;
+if(m.r==='u')return`<div class="um"><small>${MODES[m.m][0]}</small>${m.t}</div>`;
+if(m.r==='x')return`<div class="rp"><span>${ic(m.k===1?'brain':m.k===2?'clock':'spk',14)} ${m.t}</span></div>`;
+const p=PE[m.p];return`<div class="cm"><button data-pp="${m.p}">${pt(p.h,36,'11px')}</button><div class="gb"><div class="nm">${p.n}</div>${m.t===''?'<span class="dots" aria-label="Writing"><i></i><i></i><i></i></span>':m.t+(m.x?' …':'')}</div></div>`}).join('')}
+function chat(){const m=MODES[S.mode],has=S.draft.trim().length>0;
+return`<div class="scr"><div class="cbg">${scene(0)}</div>
+<div class="ch"><button class="gi" data-go="home" aria-label="Back">${ic('back',28)}</button><span class="tt">Shadows of Paris</span><button class="gp am" data-sh="world">${ic('clock',16)}<span id="clk">${fm(S.min)}</span>${ic('chev',14)}</button><button class="gi" data-sh="mem" aria-label="Memory">${ic('brain',26)}${S.mem?`<span class="bgn">New</span>`:''}</button><button class="gi dt2" data-sh="thr" aria-label="Threads">${ic('alert',26)}</button><button class="gi" data-sh="ctrl" aria-label="Story settings">${ic('menu',26)}</button></div>
+<div class="dsc">Shadows of Paris · a Charaly story pack<br>Everything here is fiction, written live by the story</div>
+${S.hud?`<div class="tens"><div class="tr"><i id="ten" style="height:${S.ten}%"></i></div><span style="writing-mode:vertical-rl">tension</span></div><div class="rail"><button class="stk" data-sh="cast" aria-label="People here">${PE.map(p=>pt(p.h,34)).join('')}</button><button class="rb" data-sh="world" aria-label="Place">${ic('pin',22)}</button><button class="rb" data-sh="skip" aria-label="Skip time">${ic('hour',22)}</button><button class="rb" data-sh="hid" aria-label="What you know">${ic('eye',22)}</button></div>`:''}
+<div class="ms ${S.hud?'hud':''}" id="ms"><div class="mi" id="mi"></div></div><div class="mv" id="mv"></div><div id="sgw">${S.sug?`<div class="sg">${SG.map(s=>`<button data-sg="${s}">${s}</button>`).join('')}</div>`:''}</div>
+<div class="bar"><button data-sh="ctrl" class="dt" aria-label="Controls">${ic('slid',26)}</button><div class="ip"><button class="md" data-act="mode">${m[0]} ${ic('chev',12)}</button><input id="in" placeholder="${m[1]}" value="${S.draft.replace(/"/g,'&quot;')}" aria-label="Your move"><button class="sd" id="sbn" data-act="spk" aria-label="Suggest">${ic('spk',24)}</button></div><button data-sh="tools" class="dt" aria-label="Tools">${ic('grid',26)}</button></div>${S.kb?'<div class="kb">keyboard</div>':''}</div>`}
+function sheet(){const k=S.sh;if(!k)return'';let b='';
+if(k==='world')b=`<h3>Right now</h3><div class="clk"><b>${fm(S.min)}</b><div><div style="font-weight:600">Thursday · Day 3</div><span class="mu">Pont des Arts, Paris<br>Rain, 11°</span></div></div><div class="arc"><i style="left:${Math.min(96,Math.max(4,((S.min-360)/1080)*100))}%"></i></div><div class="al"><span>Morning</span><span>Noon</span><span>Evening</span><span>Night</span></div><h4>Around you</h4>${PE.map((p,i)=>`<button class="pp" data-pp="${i}">${pt(p.h,44)}<div><b>${p.n}</b><span>${p.m} · ${p.w}</span></div></button>`).join('')}<h4>Elsewhere in Paris</h4>${AW.map(a=>`<div class="it"><div><small>${a[0]}</small>${a[1]}</div></div>`).join('')}<span class="bt" data-act="rw">Rewind one turn</span><span class="bt">Recap</span>`;
+if(k==='mem')b=`<h3>What Paris remembers</h3><p class="mu" style="margin:2px 0 8px">People carry these into later scenes.</p>${MEM.map(m=>`<div class="it ${m.nw?'nw2':''}"><div>${m.t}<small>${m.w}${m.nw?' · new':''}</small></div></div>`).join('')}`;
+if(k==='thr')b=`<h3>What you’re here to do</h3>${THR.map(t=>`<div class="it"><div>${t}</div></div>`).join('')}<h4>Your promises</h4>${PRM.map(p=>`<div class="pm"><b>${p[0]}</b><span>${p[1]}</span></div>`).join('')}`;
+if(k==='cast')b=`<h3>Here with you</h3>${PE.map((p,i)=>`<button class="pp" data-pp="${i}">${pt(p.h,52)}<div><b>${p.n}</b><span>${p.m} · ${p.w}</span></div></button>`).join('')}`;
+if(k==='person'){const p=PE[S.pp];b=`<div style="display:flex;gap:14px;align-items:center">${pt(p.h,72)}<div><h3>${p.n}</h3><span class="pill">${p.m}</span></div></div><h4>What she thinks of you</h4><div class="bar2"><i style="width:${p.tr}%"></i></div><div class="al"><span>Wary</span><span>Trusts you</span></div><h4>Wants</h4>${p.w}<h4>What they know tonight</h4>${p.k}<div style="margin-top:14px"><span class="bt p" data-sh="world">Back to scene</span></div>`}
+if(k==='hid')b=`<h3>What you know</h3><p class="mu" style="margin:2px 0 8px">And what you don’t.</p><div class="it"><div>Something moved on the rooftop at 22:31<small>You saw it</small></div></div><div class="it"><div>Marinette has not told Alya<small>You know</small></div></div><div class="it"><div>Why Adrien left school<small>Nobody has told you yet</small></div></div>`;
+if(k==='skip')b=`<h3>Let time pass</h3><p class="mu" style="margin:2px 0 8px">The world keeps moving while you wait.</p><div class="tl"><button data-skip="10"><span>+10 minutes</span><small>Wait for the rain to ease</small></button><button data-skip="60"><span>+1 hour</span><small>Midnight is close</small></button><button data-skip="540"><span>Until morning</span><small>Sleep. Things will change.</small></button></div>`;
+if(k==='tools')b=`<h3>Your move</h3><div class="tl">${Object.keys(MODES).map(x=>`<button class="${S.mode===x?'on':''}" data-mode="${x}">${ic(x==='do'?'doit':x==='say'?'say':'think',24)}<span>${MODES[x][0]}</span><small>${x==='do'?'Act in the scene':x==='say'?'Speak aloud':'Keep it to yourself'}</small></button>`).join('')}<button data-sh="skip">${ic('hour',24)}<span>Skip time</span><small>Let the clock move</small></button><button data-act="rw">${ic('rw',24)}<span>Rewind</span><small>Undo the last turn</small></button><button data-sh="cast">${ic('users',24)}<span>People</span><small>Who is here</small></button></div>`;
+if(k==='ctrl'){const sg=(key,arr)=>`<div class="sgm">${arr.map(a=>`<button class="${S[key]===a?'on':''}" data-set="${key}:${a}">${a}</button>`).join('')}</div>`;b=`<h3>Story controls</h3><h4>Pace</h4>${sg('pace',['Slow','Normal','Fast'])}<h4>Scene length</h4>${sg('len',['Short','Medium','Long'])}<h4>Tone</h4>${sg('tone',['Tender','Tense','Dark'])}`}
+return`<div class="scm" data-act="close"></div><div class="shd"><div class="gr"></div>${b}</div>`}
+function paint(){if(S.scr!=='chat')return;const mi=$('#mi');if(!mi)return;mi.innerHTML=msgs();const ms=$('#ms');ms.scrollTop=ms.scrollHeight;
+const b=$('#sbn'),has=S.draft.trim().length>0;if(b){b.className='sd'+(S.gen||has?' go':'');b.dataset.act=S.gen?'stop':has?'send':'spk';b.innerHTML=ic(S.gen?'stop':has?'up':'spk',S.gen||has?22:24);b.setAttribute('aria-label',S.gen?'Stop':has?'Send':'Suggest')}
+$('#mv').innerHTML=S.gen?'<span class="dots"><i></i><i></i><i></i></span> The world is moving…':S.stopped?'<button data-act="retry" style="color:var(--am)">↻ Retry</button>':'';
+const t=$('#ten');if(t)t.style.height=S.ten+'%';const c=$('#clk');if(c)c.textContent=fm(S.min)}
+function send(v){const i=$('#in');v=(v||i.value||'').trim();if(!v||S.gen)return;i.value='';S.draft='';S.sug=0;CHAT.push({r:'u',m:S.mode,t:v});S.added=0;reply()}
+function reply(){S.gen=1;S.stopped=0;S.sug=0;const seq=REP[S.ri++%REP.length].map(x=>({...x}));let q=0;
+const next=()=>{if(q>=seq.length){S.gen=0;S.ten=Math.min(96,S.ten+9);paint();return}const src=seq[q++],m={...src,t:src.r==='x'?src.t:''};CHAT.push(m);S.added++;
+if(src.r==='x'){if(src.k===1)S.mem++;if(src.k===2)S.min+=12;paint();S.to=setTimeout(next,450);return}
+let k=0;paint();S.tm=setInterval(()=>{k+=3;m.t=src.t.slice(0,k);if(k>=src.t.length){m.t=src.t;clearInterval(S.tm);S.to=setTimeout(next,350)}paint()},24)};
+S.to=setTimeout(next,900);paint()}
+function stop(){clearTimeout(S.to);clearInterval(S.tm);S.gen=0;S.stopped=1;const m=CHAT[CHAT.length-1];if(m.t==='')CHAT.pop();else m.x=1;paint()}
+function retry(){for(let i=0;i<S.added;i++)CHAT.pop();S.added=0;reply()}
+
+const bk=to=>`<button class="bk" data-go="${to}" aria-label="Back">${ic('back',24)}</button>`;
+const PK=i=>({0:{u:'Miraculous universe · Modern Paris',pre:'Paris never stops being a city of masks. By day you are the newest student at a school where everybody keeps one secret. By night something moves across the rooftops, and it has noticed you noticing.',hk:['Someone saw you on the bridge.','Two friends are lying to each other, and you know why.','The rain remembers who was out in it.'],tone:['Mystery','Tender'],atm:['Rain','Streetlight','Slow dread'],fan:1}}[i]||{u:P[i].tg.join(' · '),pre:P[i].d+' Nothing here waits for you, but everyone here will remember what you did.',hk:['Somebody is already expecting you.','The clock is already running.'],tone:P[i].tg,atm:['Dusk','Quiet']});
+const OB=['Charaly runs stories that keep going whether or not you are there.','Every person in them has a life, a memory and a clock.','Everything stays on your phone.'];
+function onboarding(){const i=+S.ob;return`<div class="ob">${scene([0,1,3][i])}<div class="cbg" style="z-index:1"></div><button class="up" style="position:absolute;top:34px;right:14px;z-index:5;background:rgba(24,24,28,.6);color:#fff" data-go="home">Skip</button><div class="tx"><div class="dg">${[0,1,2].map(k=>`<i class="${k<=i?'on':''}"></i>`).join('')}</div><h1>${OB[i]}</h1></div></div><div class="cta2" style="z-index:6"><button class="pr" ${i<2?`data-set="ob:${i+1}"`:'data-go="home"'}>${i<2?'Next':'Get started'}</button></div>`}
+function pack(){const p=P[S.pk],k=PK(S.pk);return`<div class="bd" style="padding-top:0">${bk('library')}<div class="hr2">${scene(p.sc,p.hue)}<div class="tx">${p.live?'<span class="live"><i></i>Live world</span>':''}<h1>${p.t}</h1><span class="mu">${k.u}</span></div></div>
+<p style="font-size:17px;line-height:1.55;margin:14px 0 6px">${k.pre}</p><div class="sh2" style="margin:20px 0 6px"><h2 style="font-size:19px">What you might find</h2></div>${k.hk.map(h=>`<div class="hk">${h}</div>`).join('')}<div class="sh2" style="margin:20px 0 8px"><h2 style="font-size:19px">Feel</h2></div><div class="tg">${k.tone.concat(k.atm).map(t=>`<span>${t}</span>`).join('')}</div>${k.fan?'<p class="mu" style="font-size:12.5px;margin:16px 0 0">Fan-made demonstration world. Original text and generated artwork.</p>':''}</div><div class="cta2"><button class="pr" data-go="enter">Enter Story</button></div>`}
+const OPEN=[['1','Under the Pont des Arts','Thursday, 22:40. Rain. Marinette is waiting.'],['2','The school gates','Monday, 08:05. Your first day.'],['3','The morning after','Friday, 06:30. Something is missing.']];
+function enter(){return`<div class="bd" style="padding-top:44px"><div class="lh"><button data-go="pack" aria-label="Back">${ic('back',26)}</button><h1>Enter Story</h1></div><div class="lb">Where do you begin?</div>${OPEN.map(o=>`<button class="rd ${S.op===o[0]?'on':''}" data-set="op:${o[0]}"><span class="av" style="--s:52px;--r:14px">${scene(+o[0]-1)}</span><div><b>${o[1]}</b><span>${o[2]}</span></div></button>`).join('')}<div class="lb" style="margin-top:18px">Who are you?</div><div style="margin-top:8px">${['Newcomer','Classmate','Stranger'].map(r=>`<button class="ck t2 ${S.role===r?'on':''}" data-set="role:${r}">${r}</button>`).join('')}</div><div class="lb" style="margin-top:12px">Who is with you?</div><div style="margin-top:8px">${PE.concat([{n:'Adrien',h:200},{n:'Nino',h:120}]).map(p=>`<button class="ck ${S.cast.includes(p.n)?'on':''}" data-tg="${p.n}">${pt(p.h,30)}${p.n}</button>`).join('')}</div><p class="mu" style="font-size:13px">Everyone else lives their own day and may turn up on their own.</p></div><div class="cta2"><button class="pr" data-go="chat">Begin</button></div>`}
+const SE=[['Shadows of Paris','Day 3 · 22:40','2 h ago','“Okay. I did not sign up for ghost roofs.”',0,1],['Shadows of Paris','Day 1 · 09:10','Last week','You were the new student at the school gates.',0,0],['The Last Observatory','Night 2','Yesterday','The telescope answered.',1,1],['The Silent Archive','Day 1','Last week','A note slid across the desk.',3,0]];
+function stories(){const r=a=>`<button class="sr" data-go="chat"><span class="av" style="--s:64px;--r:18px">${scene(a[4])}</span><div class="g"><b>${a[0]}</b><span class="mu" style="font-size:13px">${a[1]} · ${a[2]}</span><i>${a[3]}</i></div>${a[5]?'<span class="live"><i style="display:inline-block;margin:0"></i></span>':''}</button>`;return`<div class="bd"><div class="lh"><h1>Sessions</h1></div><div class="sh2" style="margin-top:6px"><h2 style="font-size:19px">Playing now</h2></div>${[SE[0],SE[2]].map(r).join('')}<div class="sh2"><h2 style="font-size:19px">Earlier</h2></div>${[SE[1],SE[3]].map(r).join('')}</div>`}
+function create(){return`<div class="bd"><div class="lh"><h1>Create</h1></div><button class="big" data-go="auth"><b>Write your own world</b><span>People, places and a first scene. Charaly does the rest.</span></button><button class="big" data-go="cardimp"><b>Import a character</b><span>SillyTavern card (.png or .json). You see the whole card first.</span></button><button class="big"><b>Import a story pack</b><span>Open a pack file from your phone</span></button></div>`}
+const TN=['Tender','Tense','Dark','Playful','Quiet','Strange'];
+function auth(){const n=+S.st;return`<div class="bd" style="padding-top:44px"><div class="lh"><button data-set="${n>1?'st:'+(n-1):'st:1'}" ${n>1?'':'data-go="create"'} aria-label="Back">${ic('back',26)}</button><h1>New world</h1></div><div class="dg">${[1,2,3].map(k=>`<i class="${k<=n?'on':''}"></i>`).join('')}</div>
+${n===1?`<p class="mu" style="margin:0 0 14px">A world is a set of people, places and rules that remember what happens.</p><div class="lb">Name</div><input class="fld" placeholder="Winter Harbour"><div class="lb">Tagline</div><input class="fld" placeholder="A town that forgets one person a night"><div class="lb">Premise</div><textarea class="fld" rows="5" placeholder="Who is here, what is wrong, and why does it matter tonight?"></textarea>`:n===2?`<div class="lb">How should it feel?</div><div style="margin-top:8px">${TN.map(t=>`<button class="ck t2 ${S.tn.includes(t)?'on':''}" data-tt="${t}">${t}</button>`).join('')}</div><div class="lb" style="margin-top:14px">First scene</div><textarea class="fld" rows="4" placeholder="Where does the story open?"></textarea>`:`<div class="cdp"><div style="height:140px;border-radius:16px;overflow:hidden;position:relative">${scene(1,70)}</div><h3 style="font-size:22px;margin-top:10px">Winter Harbour</h3><p class="mu">A town that forgets one person a night</p></div><div class="fl" style="border:0"><div><b>Feature this world</b><div class="mu" style="font-size:13px;max-width:24ch">Featured worlds rank above the rest in Worlds.</div></div><button class="sw ${S.feat?'on':''}" data-act="feat" aria-label="Feature"></button></div>`}</div><div class="cta2"><button class="pr" ${n<3?`data-set="st:${n+1}"`:'data-go="library"'}>${n<3?'Next':'Create world'}</button></div>`}
+function cardimp(){return`<div class="bd" style="padding-top:44px"><div class="lh"><button data-go="create" aria-label="Back">${ic('back',26)}</button><h1>Import a character</h1></div><div class="drop">${ic('plus',28)}<div style="margin-top:6px">Choose a .png or .json card</div></div><div class="lb" style="margin-bottom:8px">Preview. This is everything on the card.</div><div class="cdp"><div style="display:flex;gap:14px;align-items:center">${pt(340,64,'18px')}<div><h3 style="font-size:21px">Rin Aoyama</h3><span class="mu">by @softhours</span></div></div><h4 class="lb" style="margin:14px 0 2px">Description</h4><p>Back in town after three years. Acts casual. Is not.</p><h4 class="lb" style="margin:0 0 2px">First message</h4><p style="font-style:italic;color:#d4d4dc">She waves too fast. “Oh, hey. I was just in the neighbourhood. For three days.”</p></div><div class="lb">Where does she live?</div><div style="margin-top:8px">${P.slice(0,3).map((p,i)=>`<button class="ck t2 ${i?'':'on'}">${p.t}</button>`).join('')}</div></div><div class="cta2"><button class="pr" data-go="create">Add to world</button></div>`}
+const HUB=[['bartowski/Llama-3.2-3B-Instruct-GGUF','412k','1.1k'],['unsloth/Qwen3-4B-GGUF','288k','940'],['bartowski/Mistral-Nemo-12B-GGUF','96k','610']];
+const FILES=[['Q4_K_M','2.0 GB','Runs well','ok'],['Q8_0','3.4 GB','Heavy, may be slow','wn'],['Q2_K','1.3 GB','Lower quality','wn']];
+function hub(){const busy=DL.findIndex(d=>d.st==='dl');return`<div class="bd"><div class="lh"><h1>Models</h1><span class="pill ok">Online</span></div>
+<div class="act"><span class="mu" style="font-size:13px">Active model</span><h3 style="font-size:22px;margin:2px 0">${MD[2].n}</h3><div class="mu">${S.meas?'About 9 tokens/s · comfortable for stories':'Not measured'}</div><div style="margin-top:12px">${S.meas?'<span class="pill ok">Measured on this phone</span>':'<button class="bt p" style="margin:0" data-act="meas">Measure</button>'}</div></div>
+${busy>=0?`<div class="act"><b>${MD[busy].n}</b><div class="bar2"><i style="width:${DL[busy].pct}%"></i></div><span class="mu" data-pg="${busy}" style="font-size:13px">${DL[busy].pct}%</span></div>`:''}
+<div class="srch" style="margin-top:6px">${ic('srch',22)} Search Hugging Face</div><div class="pls"><span class="pl on">Fits this phone</span><span class="pl">Small</span><span class="pl">Storytelling</span><span class="pl">Newest</span></div>
+${HUB.map((h,i)=>`<div><button class="sr" data-repo="${i}"><div class="g"><b style="font-size:16px">${h[0].split('/')[1]}</b><span class="mu" style="font-size:13px">${h[0].split('/')[0]} · ${h[1]} downloads</span></div>${ic(S.repo===i?'chev':'cr',20)}</button>${S.repo===i?FILES.map(f=>`<div class="fl"><div><b>${f[0]} · ${f[1]}</b><div class="${f[3]}" style="font-size:13px">${f[2]}</div></div><button class="bt p" style="margin:0" data-md="1">Get</button></div>`).join(''):''}</div>`).join('')}
+<div class="sh2"><h2 style="font-size:19px">On this device</h2></div>${[2,0].map(i=>`<button class="mr" data-md="${i}" style="width:100%;text-align:left"><div class="g"><b>${MD[i].n}</b><span class="mu" style="font-size:13px">${MD[i].z} · ${i===2?(S.meas?'~9 tokens/s':'Not measured'):DL[i].st==='ready'?'Ready':'Not installed'}</span></div>${dlb(i)}</button>`).join('')}
+<div class="sh2"><h2 style="font-size:19px">Charaly knows about</h2></div><div class="mr"><div class="g"><b>Gemma 4 E2B</b><span class="wn" style="font-size:13px">Needs a newer engine</span></div></div>
+<button class="big" style="margin-top:16px" data-act="imp"><b>Import a GGUF you have</b><span>Pick a model file from your phone</span></button></div>`}
+function mdetail(){const m=MD[S.md],d=DL[S.md],nm=['Downloading','Verifying','Installing','Ready'],cur={idle:-1,dl:0,ver:1,ins:2,ready:3}[d.st];
+const ac=!m.ok?'<button class="pr" disabled>Needs a newer engine</button>':d.st==='idle'?`<button class="pr" data-dl="${S.md}">Download · ${m.z}</button>`:d.st==='ready'?`<button class="pr" data-go="enter">Use in Story</button>`:`<button class="pr" disabled>${nm[cur]}…</button>`;
+return`<div class="bd" style="padding-top:44px"><div class="lh"><button data-go="hub" aria-label="Back">${ic('back',26)}</button><h1>${m.n}</h1></div><p style="font-size:19px;font-style:italic;color:#bdbdc6;margin:4px 0 18px">“${m.d}”</p><div class="tl" style="grid-template-columns:repeat(4,1fr);gap:0;margin:0 0 14px">${[[m.z,'Size'],['Q4_K_M','Quality'],[m.n.match(/[\d.]+B/)?m.n.match(/[\d.]+B/)[0]:'—','Parameters'],['Apache 2.0','License']].map(x=>`<div><b style="font-size:14px">${x[0]}</b><div class="mu" style="font-size:11px">${x[1]}</div></div>`).join('')}</div><div class="${m.ok===1?'ok':'wn'}" style="font-size:15px">${m.ok===1?'✓ Works with this device':m.ok===2?'⚠ Heavy: replies may be slow':'⚠ Engine update required'}</div>
+${m.ok?`<div class="dg" style="margin-top:20px">${nm.map((_,k)=>`<i class="${k<=cur?'on':''}" style="background:${k<=cur?'var(--am)':''}"></i>`).join('')}</div><div class="al">${nm.map((n,k)=>`<span style="${k===cur?'color:#fff':''}">${n}</span>`).join('')}</div>${d.st==='dl'?`<div class="bar2" style="margin-top:12px"><i style="width:${d.pct}%"></i></div><span class="mu" data-pg="${S.md}">${d.pct}%</span>`:''}`:''}
+${d.st==='ready'?`<div class="act" style="margin-top:20px"><b>Speed on this phone</b><div class="mu" style="margin:2px 0 10px">${S.meas?'About 9 tokens/s · comfortable for stories':'Not measured'}</div>${S.meas?'':'<button class="bt p" style="margin:0" data-act="meas">Measure</button>'}</div>`:''}</div><div class="cta2">${ac}</div>`}
+function me(){return`<div class="bd"><div class="lh"><h1>Me</h1></div><button class="set" style="width:100%" data-go="hub"><b>Story model</b><span>${MD[2].n} ›</span></button><div class="set"><b>Appearance</b><span>Dark</span></div><div class="set"><b>Language</b><span>Türkçe</span></div><div class="set"><b>Storage</b><span>4.8 GB used</span></div><div class="set"><b>Privacy</b><span>Stays on your phone</span></div><div class="set"><b>Developer mode</b><button class="sw ${S.dev?'on':''}" data-act="dev" aria-label="Developer mode"></button></div>${S.dev?`<div class="act" style="margin-top:12px"><b>Clock</b><div class="mu" style="margin:2px 0 10px">World time ${fm(S.min)}</div><button class="bt p" style="margin:0" data-act="step">Step +10 min</button></div>`:''}<div class="set"><b>About</b><span>Charaly 0.8.0</span></div></div>`}
+const SC={onboarding,home,library,pack,enter,stories,create,auth,cardimp,hub,mdetail,me};
+const TABS=[['onboarding','Intro'],['home','Home'],['library','Library'],['pack','Story pack'],['enter','Enter story'],['chat','Story chat'],['chat:world','World'],['chat:mem','Memory'],['chat:cast','People'],['chat:thr','Story sheet'],['stories','Sessions'],['create','Create'],['auth','New world'],['cardimp','Import character'],['hub','Models'],['mdetail','Model'],['me','Me']];
+function R(){const p=$('#ph');const old=p.querySelector('.bd'),keep=old&&S.last===S.scr?old.scrollTop:0;
+p.innerHTML='<div class="sb"><span>13:15</span><span>5G ▮▮▮ 87</span></div>'+(S.scr==='chat'?chat():`<div class="scr">${SC[S.scr]()}</div>`+nv())+(S.scr==='chat'?sheet():'');
+const b=p.querySelector('.bd');if(b)b.scrollTop=keep;S.last=S.scr;
+const inp=$('#in');if(inp){inp.oninput=()=>{S.draft=inp.value;const b=$('#sbn');if(b){const h=S.draft.trim().length>0;b.className='sd'+(S.gen||h?' go':'');b.dataset.act=S.gen?'stop':h?'send':'spk';b.innerHTML=ic(S.gen?'stop':h?'up':'spk',S.gen||h?22:24)}};inp.onkeydown=e=>{if(e.key==='Enter')send()}}
+paint();
+$('#ts').innerHTML=TABS.map(([k,l])=>{const [g,s]=k.split(':');const on=g===S.scr&&(g!=='chat'||(s?S.sh===s||(s==='person'&&S.sh==='person'):!S.sh));return`<button class="t ${on?'on':''}" data-tab="${k}">${l}</button>`}).join('');
+$('#tx').innerHTML=`<button class="t ${S.hud?'on':''}" data-act="hud">Story HUD ${S.hud?'on':'off'}</button><button class="t ${S.kb?'on':''}" data-act="kb">Keyboard</button>`;
+$('#desc').textContent='Amber = the world is alive. Blue = new for you. Tap the clock, brain, ! icon, ✦ and grid in the story.'}
+function tick(){let ch=0,busy=0;DL.forEach(d=>{if(d.st==='dl'){busy=1;d.pct=Math.min(100,d.pct+2+Math.random()*4|0);if(d.pct>=100){d.st='ver';d.t=0;ch=1}}else if(d.st==='ver'||d.st==='ins'){busy=1;if(++d.t>10){d.t=0;d.st=d.st==='ver'?'ins':'ready';ch=1}}});
+if(ch)R();else document.querySelectorAll('[data-pg]').forEach(e=>e.textContent=DL[e.dataset.pg].pct+'%');if(!busy){clearInterval(S.dt);S.dt=0}}
+document.addEventListener('click',e=>{const t=e.target.closest('[data-tab],[data-go],[data-sh],[data-act],[data-sg],[data-mode],[data-pp],[data-dl],[data-set],[data-skip],[data-pk],[data-tg],[data-tt],[data-md],[data-repo]');if(!t)return;const d=t.dataset;
+if(d.act==='send'){send();return}if(d.act==='stop'){stop();return}if(d.act==='retry'){retry();return}
+if(d.sg){S.mode='do';send(d.sg);return}
+if(d.tab){const [g,s]=d.tab.split(':');S.scr=g;S.sh=s||'';if(s==='person')S.pp=0}
+if(d.go){S.scr=d.go;S.sh=''}
+if(d.sh)S.sh=d.sh;
+if(d.pp!=null){S.pp=+d.pp;if(S.scr!=='chat')S.scr='chat';S.sh='person'}
+if(d.mode){S.mode=d.mode;S.sh=''}
+if(d.set){const [k,v]=d.set.split(':');S[k]=v}
+if(d.skip){const n=+d.skip;S.min+=n;S.sh='';CHAT.push({r:'n',t:n>=540?'Morning comes up grey over the river. The rain has finally stopped.':n>=60?'An hour slips by. Somewhere a church bell loses count.':'Ten minutes pass. The rain eases and the lamps stop shaking.'});CHAT.push({r:'x',t:`→ ${fm(S.min)}`,k:2});S.ten=Math.max(10,S.ten-12)}
+if(d.act==='close')S.sh='';
+if(d.pk!=null){S.pk=+d.pk;S.scr='pack';S.sh=''}
+if(d.tg){S.cast=S.cast.includes(d.tg)?S.cast.filter(x=>x!==d.tg):S.cast.concat(d.tg)}
+if(d.tt){S.tn=S.tn.includes(d.tt)?S.tn.filter(x=>x!==d.tt):S.tn.concat(d.tt)}
+if(d.md!=null){S.md=+d.md;S.scr='mdetail'}
+if(d.repo!=null){S.repo=S.repo===+d.repo?-1:+d.repo}
+if(d.act==='meas')S.meas=1;if(d.act==='dev')S.dev=!S.dev;if(d.act==='feat')S.feat=!S.feat;if(d.act==='step')S.min+=10;
+if(d.act==='mode'){const k=Object.keys(MODES);S.mode=k[(k.indexOf(S.mode)+1)%k.length]}
+if(d.act==='spk'){S.sug=!S.sug}
+if(d.act==='kb')S.kb=!S.kb;if(d.act==='hud')S.hud=!S.hud;
+if(d.act==='rw'&&CHAT.length>3){let n=0;while(CHAT.length>3&&n<4){const x=CHAT.pop();n++;if(x.r==='u')break}S.sh=''}
+if(d.dl!=null){const i=+d.dl;if(MD[i].ok&&DL[i].st==='idle'){DL[i].st='dl';DL[i].pct=0;if(!S.dt)S.dt=setInterval(tick,120)}}
+R()});
+R();
+</script></body></html>
